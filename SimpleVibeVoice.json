@@ -1,0 +1,83 @@
+{
+  "1": {
+    "inputs": {
+      "model": "local:vibevoice-7B",
+      "device": "auto",
+      "quantize_llm_4bit": true,
+      "attention_mode": "auto",
+      "multi_speaker_mode": "Native Multi-Speaker",
+      "cfg_scale": 3,
+      "inference_steps": 3,
+      "use_sampling": false,
+      "temperature": 0.95,
+      "top_p": 0.95,
+      "chunk_minutes": 0,
+      "max_new_tokens": 0
+    },
+    "class_type": "VibeVoiceEngineNode",
+    "_meta": {
+      "title": "⚙️ VibeVoice Engine"
+    }
+  },
+  "2": {
+    "inputs": {
+      "text": [
+        "3",
+        0
+      ],
+      "narrator_voice": "none",
+      "seed": 148506267,
+      "enable_chunking": true,
+      "max_chars_per_chunk": 400,
+      "chunk_combination_method": "auto",
+      "silence_between_chunks_ms": 100,
+      "enable_audio_cache": true,
+      "batch_size": 0,
+      "TTS_engine": [
+        "1",
+        0
+      ],
+      "opt_narrator": [
+        "4",
+        0
+      ]
+    },
+    "class_type": "UnifiedTTSTextNode",
+    "_meta": {
+      "title": "🎤 TTS Text"
+    }
+  },
+  "3": {
+    "inputs": {
+      "value": "测试一下效果"
+    },
+    "class_type": "PrimitiveStringMultiline",
+    "_meta": {
+      "title": "字符串（多行）"
+    }
+  },
+  "4": {
+    "inputs": {
+      "audio": "bandicam 2025-10-23 14-17-23-741.wav",
+      "audioUI": ""
+    },
+    "class_type": "LoadAudio",
+    "_meta": {
+      "title": "加载音频"
+    }
+  },
+  "5": {
+    "inputs": {
+      "filename_prefix": "audio/ComfyUI",
+      "audioUI": "",
+      "audio": [
+        "2",
+        0
+      ]
+    },
+    "class_type": "SaveAudio",
+    "_meta": {
+      "title": "保存音频"
+    }
+  }
+}

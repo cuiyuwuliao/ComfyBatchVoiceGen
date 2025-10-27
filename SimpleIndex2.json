@@ -1,0 +1,102 @@
+{
+  "1": {
+    "inputs": {
+      "model_path": "local:IndexTTS-2",
+      "device": "auto",
+      "emotion_alpha": 0.7,
+      "use_random": false,
+      "max_text_tokens_per_segment": 120,
+      "interval_silence": 200,
+      "temperature": 0.8,
+      "top_p": 0.8,
+      "top_k": 30,
+      "do_sample": true,
+      "length_penalty": 0,
+      "num_beams": 3,
+      "repetition_penalty": 10,
+      "max_mel_tokens": 1500,
+      "use_fp16": true,
+      "use_deepspeed": false,
+      "use_cuda_kernel": "auto",
+      "emotion_control": [
+        "7",
+        0
+      ]
+    },
+    "class_type": "IndexTTSEngineNode",
+    "_meta": {
+      "title": "⚙️ IndexTTS-2 Engine"
+    }
+  },
+  "2": {
+    "inputs": {
+      "text": [
+        "6",
+        0
+      ],
+      "narrator_voice": "none",
+      "seed": 1682336229,
+      "enable_chunking": true,
+      "max_chars_per_chunk": 400,
+      "chunk_combination_method": "auto",
+      "silence_between_chunks_ms": 100,
+      "enable_audio_cache": true,
+      "batch_size": 0,
+      "TTS_engine": [
+        "1",
+        0
+      ],
+      "opt_narrator": [
+        "3",
+        0
+      ]
+    },
+    "class_type": "UnifiedTTSTextNode",
+    "_meta": {
+      "title": "🎤 TTS Text"
+    }
+  },
+  "3": {
+    "inputs": {
+      "audio": "bandicam 2025-10-23 14-17-23-741.wav",
+      "audioUI": ""
+    },
+    "class_type": "LoadAudio",
+    "_meta": {
+      "title": "加载音频"
+    }
+  },
+  "5": {
+    "inputs": {
+      "filename_prefix": "audio/ComfyUI",
+      "audioUI": "",
+      "audio": [
+        "2",
+        0
+      ]
+    },
+    "class_type": "SaveAudio",
+    "_meta": {
+      "title": "保存音频"
+    }
+  },
+  "6": {
+    "inputs": {
+      "value": "你好吗"
+    },
+    "class_type": "PrimitiveStringMultiline",
+    "_meta": {
+      "title": "字符串（多行）"
+    }
+  },
+  "7": {
+    "inputs": {
+      "qwen_model": "local:qwen0.6bemo4-merge",
+      "emotion_text": "Happy character speaking: {seg}"
+    },
+    "class_type": "QwenEmotionNode",
+    "_meta": {
+      "title": "🌈 IndexTTS-2 Text Emotion"
+    }
+  }
+}

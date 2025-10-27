@@ -1,0 +1,73 @@
+{
+  "1": {
+    "inputs": {
+      "model": "local:goblin.pth",
+      "index_file": "",
+      "auto_download": true
+    },
+    "class_type": "LoadRVCModelNode",
+    "_meta": {
+      "title": "🎭 Load RVC Character Model"
+    }
+  },
+  "2": {
+    "inputs": {
+      "refinement_passes": 1,
+      "TTS_engine": [
+        "3",
+        0
+      ],
+      "source_audio": [
+        "4",
+        0
+      ],
+      "narrator_target": [
+        "1",
+        0
+      ]
+    },
+    "class_type": "UnifiedVoiceChangerNode",
+    "_meta": {
+      "title": "🔄 Voice Changer"
+    }
+  },
+  "3": {
+    "inputs": {
+      "pitch": 0,
+      "index_ratio": 0.75,
+      "consonant_protection": 0.25,
+      "volume_envelope": 0.25,
+      "hubert_model": "auto: Automatically select best available model",
+      "output_sample_rate": 0,
+      "device": "auto"
+    },
+    "class_type": "RVCEngineNode",
+    "_meta": {
+      "title": "⚙️ RVC Engine"
+    }
+  },
+  "4": {
+    "inputs": {
+      "audio": "bandicam 2025-10-23 14-17-23-741.wav",
+      "audioUI": ""
+    },
+    "class_type": "LoadAudio",
+    "_meta": {
+      "title": "加载音频"
+    }
+  },
+  "5": {
+    "inputs": {
+      "filename_prefix": "audio/ComfyUI",
+      "audioUI": "",
+      "audio": [
+        "2",
+        0
+      ]
+    },
+    "class_type": "SaveAudio",
+    "_meta": {
+      "title": "保存音频"
+    }
+  }
+}
