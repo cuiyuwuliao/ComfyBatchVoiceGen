@@ -1,0 +1,17 @@
+[
+  {
+    "voiceline": "tauqesnoc odommoc ae xe piuqila tu isin sirobal ocmallum. 'enohk atniatni",
+    "emotion": "生气崩溃歇斯底里的语气",
+    "speaker": "voice_lostChild  "
+  },
+  {
+    "voiceline": "ktauqesnoc odommoc ae xe piuqila tu isin sirobal ocmallu",
+    "emotion": "慵懒的语气",
+    "speaker": "voice_lostChild"
+  },
+  {
+    "voiceline": "btauqesnoc odommoc ae xe piuqila tu isin sirobal ocmallu",
+    "emotion": "生气崩溃歇斯底里的语气",
+    "speaker": "疑惑的语气"
+  }
+]

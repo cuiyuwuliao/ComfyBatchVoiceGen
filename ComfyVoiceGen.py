@@ -20,6 +20,12 @@ else:
     currentDir = os.path.dirname(os.path.abspath(__file__))
     currentPath = os.path.abspath(__file__)
 
+def replace_drive_with_root(path):
+    if len(path) > 1 and path[1] == ':':
+        relative_path = path[2:]
+        return rootDir + relative_path
+    return path
+
 # Replace any drive letter with the network root path
 if len(currentDir) > 1 and currentDir[1] == ':':
     # Extract the path after the drive letter (e.g., "\Application\...")
@@ -35,6 +41,7 @@ CURRENTMODE = 1
 CURRENTTIME = str(int(time.time()))[::-1] #当前的epoch time倒过来, 用作生成文件夹的标识符
 DGY = os.path.join(currentDir, "声音参考\\voice_DGY.wav")
 
+# 本来以为是编码问题导致bad request, 实际上是因为每个人网盘盘符不一样，所以不需要改编码了
 def decode_unicode_escapes(text):
     return text
     try:
@@ -98,10 +105,19 @@ def getset_cache_config(path, value = None):
     except Exception as e:
         return None
 
-
+def get_unique_path(path):
+    """如果路径已存在，在文件名前加递增数字"""
+    if not os.path.exists(path):
+        return path
+    
+    base, ext = os.path.splitext(path)
+    counter = 1
+    while os.path.exists(f"{base}_{counter}{ext}"):
+        counter += 1
+    return f"{base}_{counter}{ext}"
 
 # 首先需要把comfyUI->设置->服务器配置里: 输出路径改为"C:\\comfyTemp", 端口号改为7860
-def generate_voice_comfyUI(prompt, outputPath, comfyUIConfig = None, cloneTarget = None, emotion = "耐心解释的语气"):
+def generate_voice_comfyUI(prompt, outputPath, comfyUIConfig = None, cloneTarget = None, emotion = "耐心解释的语气", pitch:float=0.0):
     if not prompt:
         print("! 没有台词, 跳过生成")
         return
@@ -118,30 +134,35 @@ def generate_voice_comfyUI(prompt, outputPath, comfyUIConfig = None, cloneTarget
         emotion, alpha = extract_float_after_separator(emotion)
         if alpha:
             comfyUIConfig["1"]["inputs"]["emotion_alpha"] = alpha
-        
+        comfyUIConfig["2"]["inputs"]["seed"] = random.randint(0, 2_147_483_647)
     elif CURRENTMODE == 2:#vibevoice
         comfyUIConfig["3"]["inputs"]["value"] = prompt
         if cloneTarget:
             comfyUIConfig["4"]["inputs"]["audio"] = cloneTarget
+        comfyUIConfig["2"]["inputs"]["seed"] = random.randint(0, 2_147_483_647)
     elif CURRENTMODE == 3:#rvc
+        comfyUIConfig["3"]["inputs"]["pitch"] = pitch
         if prompt:
             comfyUIConfig["4"]["inputs"]["audio"] = prompt #这个需要是一个原始音频的filepath
+        if cloneTarget:
+            comfyUIConfig["1"]["inputs"]["model"] = cloneTarget
         prompt = os.path.basename(prompt).split(".")[0]#命名用
         
     outputAudioPath = os.path.join(outputPath, f"{CURRENTVOICELINEFILE}{str(CURRENTTIME)}")
     os.makedirs(outputAudioPath, exist_ok=True)
     outputAudioPath = os.path.join(outputAudioPath, f"{extract_valid_chars(prompt, 8)}.flac")
+    outputAudioPath = get_unique_path(outputAudioPath)
 
     response = requests.post(API_URL, json={"prompt" : comfyUIConfig})
     if response.status_code == 200:
-        for _ in range (120):
+        for _ in range (180):
             for filename in os.listdir(outputPath):
                 if filename.startswith(str(CURRENTTIME)) and (".flac" in filename or ".wav" in filename):
                     shutil.move(os.path.join(outputPath, filename), outputAudioPath)
-                    print(f"生成到了目录 -> 生成结果/{str(CURRENTTIME)}")
+                    print(f"生成到了 -> {outputAudioPath}")
                     return outputAudioPath
             time.sleep(1)
-        print(f"生成超时(检查GPU是否被占用): {outputAudioPath}")
+        print(f"生成超时(检查GPU是否被占用): {outputAudioPath}\n\n***如果你在生成很长语音, 可以稍等一会儿再去生成结果文件夹内查看***")
         return outputAudioPath
     else:
         print(f"comfyUI语音生成失败: {response.status_code}, {response.text}")
@@ -175,6 +196,7 @@ def read_comfyUIConfig(path):
             data["3"]["inputs"]["audio"] = audio_path
             data["5"]["inputs"]["filename_prefix"] = str(CURRENTTIME)
             data["2"]["inputs"]["seed"] = random.randint(0, 2_147_483_647)
+            
         elif CURRENTMODE == 2:#vibevoice
             data["4"]["inputs"]["audio"] = audio_path
             data["5"]["inputs"]["filename_prefix"] = str(CURRENTTIME)
@@ -236,7 +258,8 @@ def read_voicelines(file_path):
 def get_audio_files():
     supported_formats = ('.wav', '.flac', '.mp3')
     while True:
-        user_input = input("拖入要变声的音频文件或文件夹: ").strip()
+        user_input = input("拖入要变声的音频文件或文件夹*同网盘内的*: ").strip()
+        user_input = replace_drive_with_root(user_input)
         if not user_input:
             print("别留空")
             continue
@@ -275,7 +298,7 @@ if __name__ == "__main__":
         except:
             CURRENTMODE = 1
     else:
-        CURRENTMODE = 1
+        CURRENTMODE = 3
     print(f"*应用: {MODES[CURRENTMODE]}")
 
     configFile = os.path.join(currentDir, MODES[CURRENTMODE])
@@ -283,6 +306,9 @@ if __name__ == "__main__":
     outputPath = os.path.join(currentDir, "生成结果")
 
     if CURRENTMODE in [3, "3"]:
+        model_list_str = getset_cache_config(os.path.join(currentDir, "RVC_MODELS.txt"))
+        if model_list_str:
+            ALLOWEDRVCMODEL = model_list_str.splitlines()
         files = get_audio_files()
         pthFile = ""
         print("\n当前可用声线模型: ")
@@ -298,9 +324,19 @@ if __name__ == "__main__":
                 break
             except:
                 continue
+        last_input = input("\n确认无误后, 按回车开始生成, 你也可以在这里输入一个数字来调整声线pitch(默认为0):")
+        pitch = 0.0
+        if last_input:
+            try:
+                pitch = float(last_input)
+            except:
+                pitch = 0.0
+        else:
+            pass
         os.system('cls')
+        print(f"使用pitch: {pitch}\n")
         for file in files:
-            generate_voice_comfyUI(decode_unicode_escapes(file), decode_unicode_escapes(outputPath) ,configData, cloneTarget = decode_unicode_escapes(pthFile))
+            generate_voice_comfyUI(file, outputPath ,configData, cloneTarget = pthFile,pitch=pitch)
             print("-------------------------------------")
         input("生成结束, 按回车退出")
         sys.exit()
@@ -342,7 +378,8 @@ if __name__ == "__main__":
         print(f"(未成功读取台本)即将生成以下内容:\n{user_input}")
         user_input_clone = ""
         while not os.path.exists(user_input_clone):
-            user_input_clone = input("\n\n拖入一个参考语音文件(你也可以输入\"skip\"来使用默认的声音):")
+            user_input_clone = input("\n\n拖入一个*同网盘内的*参考语音文件(你也可以输入\"skip\"来使用默认的声音):")
+            replace_drive_with_root(user_input_clone)
             if user_input_clone.lower() == "skip":
                 user_input_clone = DGY
                 break
@@ -358,7 +395,16 @@ if __name__ == "__main__":
         elif not cloneTargetPath:
             print(f"! 克隆声音不存在: {line.get("speaker")}")
 
-    input("\n确认无误后, 按回车开始生成")
+    last_input = input("\n确认无误后, 按回车开始生成, 你也可以在这里输入一个数字来表示要生成的批次(默认为一次)")
+    batch = 1
+    try:
+        if last_input:
+            batch = int(last_input)
+            input(f"\n确定要开始生成 {batch} 批次? 确定后按回车开始生成")
+    except:
+        batch = 1
+
+
     os.system('cls')
     for line in voicelines:
         cloneTargetPath = line.get("speaker")
@@ -371,8 +417,9 @@ if __name__ == "__main__":
             print(f"! 克隆的声音不存在: {line.get("speaker")}, 使用默认声音")
             cloneTargetPath = DGY
         emotionDescription = line.get("emotion")
-
-        generate_voice_comfyUI(decode_unicode_escapes(prompt), decode_unicode_escapes(outputPath) ,configData, cloneTarget = decode_unicode_escapes(cloneTargetPath), emotion = decode_unicode_escapes(emotionDescription))
+        for i in range(batch):
+            print(f"第 {i+1}/{batch}批次")
+            generate_voice_comfyUI(prompt, outputPath ,configData, cloneTarget = cloneTargetPath, emotion = emotionDescription)
         print("-------------------------------------")
     input("生成结束, 按回车退出")
     sys.exit()

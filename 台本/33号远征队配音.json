@@ -1,0 +1,47 @@
+[
+  {
+    "voiceline": "I am not [pause:1] letting Maelle die out here. I'm taking her home",
+    "emotion": "坚定的语气",
+    "speaker": "voice_gustav"
+  },
+  {
+    "voiceline": "What? No, no no. We have a mission-",
+    "emotion": "难以置信的语气",
+    "speaker": "voice_lune"
+  },
+  {
+    "voiceline": "Oh fuck the mission! Fuck the mission Lune",
+    "emotion": "生气崩溃歇斯底里的语气",
+    "speaker": "voice_gustav"
+  },
+  {
+    "voiceline": "What're we gonna do, huh? Tell me. What are we gonna do? We're gonna take down the Paintress, just the three of us? My..my gun and your sparks?",
+    "emotion": "质问的语气",
+    "speaker": "voice_gustav"
+  },
+  {
+    "voiceline": "I didn't take you for a coward.",
+    "emotion": "责备的语气",
+    "speaker": "voice_lune"
+  },
+  {
+    "voiceline": "I'm not a coward",
+    "emotion": "争辩的语气",
+    "speaker": "voice_gustav"
+  },
+  {
+    "voiceline": "You swore the oath. When one falls. We Continue.",
+    "emotion": "责备的语气",
+    "speaker": "voice_lune"
+  },
+  {
+    "voiceline": "Yes, I know.",
+    "emotion": "平静的语气",
+    "speaker": "voice_gustav"
+  },
+  {
+    "voiceline": "When one falls. [pause:1]WHEN[pause:1] one falls. Not if. [pause:1]When",
+    "emotion": "强调的语气",
+    "speaker": "voice_lune"
+  }
+]

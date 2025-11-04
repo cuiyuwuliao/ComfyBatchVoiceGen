@@ -1,0 +1,85 @@
+[
+{
+"voiceline": "Kilo nara mumu, kili nara moo… hee?",
+"emotion": "轻松懒散的语气",
+"speaker": "voice_korok"
+},
+{
+"voiceline": "Rumi tala, rumi tala—ninu raa, oké?",
+"emotion": "生气的语气",
+"speaker": "voice_korok"
+},
+{
+"voiceline": "Tira lumo nene, lumo tira ni… ya!",
+"emotion": "沮丧的语气",
+"speaker": "voice_korok"
+},
+{
+"voiceline": "Griya melo, griya melo-lu… hm",
+"emotion": "快乐的语气",
+"speaker": "voice_korok"
+},
+
+{
+"voiceline": "Kilo nara mumu, kili nara moo… hee?",
+"emotion": "轻松懒散的语气",
+"speaker": "voice_eevee"
+},
+{
+"voiceline": "Rumi tala, rumi tala—ninu raa, oké?",
+"emotion": "生气的语气",
+"speaker": "voice_eevee"
+},
+{
+"voiceline": "Tira lumo nene, lumo tira ni… ya!",
+"emotion": "沮丧的语气",
+"speaker": "voice_eevee"
+},
+{
+"voiceline": "Griya melo, griya melo-lu… hm",
+"emotion": "快乐的语气",
+"speaker": "voice_eevee"
+},
+
+{
+"voiceline": "Kilo nara mumu, kili nara moo… hee?",
+"emotion": "轻松懒散的语气",
+"speaker": "voice_splatoon"
+},
+{
+"voiceline": "Rumi tala, rumi tala—ninu raa, oké?",
+"emotion": "生气的语气",
+"speaker": "voice_splatoon"
+},
+{
+"voiceline": "Tira lumo nene, lumo tira ni… ya!",
+"emotion": "沮丧的语气",
+"speaker": "voice_splatoon"
+},
+{
+"voiceline": "Griya melo, griya melo-lu… hm",
+"emotion": "快乐的语气",
+"speaker": "voice_splatoon"
+},
+
+{
+"voiceline": "Kilo nara mumu, kili nara moo… hee?",
+"emotion": "轻松懒散的语气",
+"speaker": "voice_monster_slime"
+},
+{
+"voiceline": "Rumi tala, rumi tala—ninu raa, oké?",
+"emotion": "生气的语气",
+"speaker": "voice_monster_slime"
+},
+{
+"voiceline": "Tira lumo nene, lumo tira ni… ya!",
+"emotion": "沮丧的语气",
+"speaker": "voice_monster_slime"
+},
+{
+"voiceline": "Griya melo, griya melo-lu… hm",
+"emotion": "快乐的语气",
+"speaker": "voice_monster_slime"
+}
+]
